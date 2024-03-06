@@ -524,3 +524,5 @@ productRouter.route('/detail')
     .get((req,res)=>{
     res.send('product detail')
 })
+
+module.exports =productRouter;

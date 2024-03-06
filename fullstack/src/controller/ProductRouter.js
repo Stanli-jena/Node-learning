@@ -1,7 +1,7 @@
 let express = require('express');
 let productRouter = express.Router();
 
-const  product = [
+const  products = [
     {
         "id": 1,
         "product_name": "Girls top",
@@ -515,14 +515,20 @@ const  product = [
     }
 ]
 
-productRouter.route('/')
+function router(menu){
+    productRouter.route('/')
    .get((req,res)=>{
-    res.send(product)
+    res.render('products',{title:'Products Page',data:products,menu})
 })
 
 productRouter.route('/detail')
     .get((req,res)=>{
     res.send('product detail')
 })
+  return productRouter;
+}
 
-module.exports =productRouter;
+
+
+
+module.exports =router;

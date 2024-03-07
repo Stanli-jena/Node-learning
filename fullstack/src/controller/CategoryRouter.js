@@ -1,5 +1,7 @@
 let express = require('express');
 let categoryRouter = express.Router();
+let mongodb = require('mongodb').MongoClient;
+let url = process.env.MONGO_URL;
 
 const category = [
     {
@@ -27,7 +29,20 @@ const category = [
 function router(menu){
     categoryRouter.route('/')
         .get((req,res)=>{
-        res.render('category',{title:'Category Page',category,menu})
+        mongodb.connect(url,function(err,dc){
+            if(err){
+                res.status(500).send('Error while connecting')
+            }else{
+                let dbObj = dc.db('learnode');
+                dbObj.collection('category').find().toArray(function(err,result){
+                    if(err){
+                        res.status(203).send('Error while fetching')
+                    }else{
+                        res.render('category',{title:'Category Page',category,menu})
+                    }
+                })
+            }
+        })    
     })
     
     categoryRouter.route('/details')

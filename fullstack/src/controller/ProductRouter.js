@@ -1,5 +1,7 @@
 let express = require('express');
 let productRouter = express.Router();
+let mongodb = require('mongodb').MongoClient;
+let url = process.env.MONGO_URL;
 
 const  products = [
     {
@@ -518,7 +520,20 @@ const  products = [
 function router(menu){
     productRouter.route('/')
    .get((req,res)=>{
-    res.render('products',{title:'Products Page',data:products,menu})
+    mongodb.connect(url,function(err,dc){
+        if(err){
+            res.status(500).send('Error while connecting')
+        }else{
+            let dbObj = dc.db('learnode');
+            dbObj.collection('products').find().toArray(function(err,result){
+                if(err){
+                    res.status(203).send('Error while fetching')
+                }else{
+                    res.render('products',{title:'Products Page',data:products,menu})
+                }
+            })
+        } 
+    })       
 })
 
 productRouter.route('/detail')
@@ -531,4 +546,4 @@ productRouter.route('/detail')
 
 
 
-module.exports =router;
+   module.exports =router;
